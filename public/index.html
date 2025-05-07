@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Spotify Episode Info</title>
+</head>
+<body>
+  <h1>Consulta de Episodio de Spotify</h1>
+  <input type="text" id="spotifyUrl" placeholder="Pega la URL del episodio" />
+  <button onclick="consultar()">Consultar</button>
+  <pre id="output"></pre>
+
+  <script>
+    async function consultar() {
+      const url = document.getElementById('spotifyUrl').value;
+      const res = await fetch(`/api/spotify?url=${encodeURIComponent(url)}`);
+      const data = await res.json();
+      document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>
