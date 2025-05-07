@@ -13,6 +13,7 @@ export default async function handler(req, res) {
   }
   const playlist_id = match[1];
 
+  // Obtener token
   const tokenResponse = await fetch('https://accounts.spotify.com/api/token', {
     method: 'POST',
     headers: {
@@ -31,7 +32,7 @@ export default async function handler(req, res) {
   const access_token = tokenData.access_token;
 
   // Obtener datos de la playlist
-  const playlistResponse = await fetch(`https://api.spotify.com/v1/playlists/${playlist_id}`, {
+  const playlistResponse = await fetch(`https://api.spotify.com/v1/playlists/${playlist_id}?market=MX`, {
     headers: {
       'Authorization': 'Bearer ' + access_token,
     },
@@ -44,28 +45,35 @@ export default async function handler(req, res) {
 
   const playlistData = await playlistResponse.json();
 
-  const owner_image = playlistData.owner?.images?.[0]?.url || null;
-
-  // Extraer una fecha aproximada del primer track (no siempre está disponible)
+  // Calcular duración total
+  let duration_ms = 0;
   const tracks = playlistData.tracks.items;
-  let release_date = null;
 
-  for (let i = 0; i < Math.min(tracks.length, 10); i++) {
-    const added_at = tracks[i]?.added_at;
-    if (added_at) {
-      if (!release_date || added_at < release_date) {
-        release_date = added_at;
-      }
+  for (let i = 0; i < tracks.length; i++) {
+    const track = tracks[i]?.track;
+    if (track?.duration_ms) {
+      duration_ms += track.duration_ms;
     }
   }
+
+  // Formatear duración
+  const totalSeconds = Math.floor(duration_ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  const duration_formatted = [
+    hours.toString().padStart(2, '0'),
+    minutes.toString().padStart(2, '0'),
+    seconds.toString().padStart(2, '0'),
+  ].join(':');
 
   res.status(200).json({
     title: playlistData.name,
     description: playlistData.description,
     owner_name: playlistData.owner.display_name,
-    owner_image: owner_image,
     image: playlistData.images?.[0]?.url || null,
-    tracks_count: playlistData.tracks.total,
-    release_date: release_date,
+    duration_ms,
+    duration_formatted,
   });
 }
+
