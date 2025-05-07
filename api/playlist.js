@@ -72,7 +72,6 @@ export default async function handler(req, res) {
     description: playlistData.description,
     owner_name: playlistData.owner.display_name,
     image: playlistData.images?.[0]?.url || null,
-    duration_ms,
     duration_formatted,
   });
 }
