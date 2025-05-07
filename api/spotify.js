@@ -49,5 +49,8 @@ export default async function handler(req, res) {
     title: episodeData.name,
     description: episodeData.description,
     release_date: episodeData.release_date,
+    showimage: episodeData.show.images[0].url,
+    image: episodeData.images[0].url,
+    showname: episodeData.show.name,
   });
 }
