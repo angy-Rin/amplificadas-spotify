@@ -67,12 +67,13 @@ export default async function handler(req, res) {
     seconds.toString().padStart(2, '0'),
   ].join(':');
 
-  res.status(200).json({
-    title: playlistData.name,
-    description: playlistData.description,
-    owner_name: playlistData.owner.display_name,
-    image: playlistData.images?.[0]?.url || null,
-    duration_formatted,
-  });
+ res.status(200).json({
+  title: playlistData.name,
+  description: playlistData.description,
+  owner_name: playlistData.owner.display_name,
+  image: playlistData.images?.[playlistData.images.length - 1]?.url || null,
+  duration_formatted,
+});
+
 }
 
