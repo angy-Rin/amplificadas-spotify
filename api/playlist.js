@@ -71,7 +71,7 @@ export default async function handler(req, res) {
   title: playlistData.name,
   description: playlistData.description,
   owner_name: playlistData.owner.display_name,
-  image: playlistData.images?.[playlistData.images.length - 1]?.url || null,
+  image: playlistData.images?.[0]?.url || null,
   duration_formatted,
 });
 
