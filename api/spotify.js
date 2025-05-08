@@ -45,6 +45,21 @@ export default async function handler(req, res) {
   }
 
   const episodeData = await episodeResponse.json();
+
+  // Calcular duración
+  const duration_ms = episodeData.duration_ms;
+  const total_seconds = Math.floor(duration_ms / 1000);
+  const hours = Math.floor(total_seconds / 3600);
+  const minutes = Math.floor((total_seconds % 3600) / 60);
+  const seconds = total_seconds % 60;
+
+  let durationFormatted = '';
+  if (hours > 0) {
+    durationFormatted = `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  } else {
+    durationFormatted = `${minutes}:${String(seconds).padStart(2, '0')}`;
+  }
+
   res.status(200).json({
     title: episodeData.name,
     description: episodeData.description,
@@ -52,5 +67,7 @@ export default async function handler(req, res) {
     showimage: episodeData.show.images[0].url,
     image: episodeData.images[0].url,
     showname: episodeData.show.name,
+    duration: durationFormatted,
   });
 }
+
