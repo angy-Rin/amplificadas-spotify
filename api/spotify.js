@@ -61,13 +61,13 @@ export default async function handler(req, res) {
   }
 
   res.status(200).json({
-    title: episodeData.name,
-    description: episodeData.description,
-    release_date: episodeData.release_date,
-    showimage: episodeData.show.images[0].url,
-    image: episodeData.images[0].url,
-    showname: episodeData.show.name,
-    duration: durationFormatted,
-  });
+  title: episodeData.name,
+  description: episodeData.description,
+  release_date: episodeData.release_date,
+  showimage: episodeData.show.images[episodeData.show.images.length - 1].url,
+  image: episodeData.images[episodeData.images.length - 1].url,
+  showname: episodeData.show.name,
+  duration: durationFormatted,
+});
 }
 
